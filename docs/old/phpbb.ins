@@ -1,0 +1,136 @@
+Сейчас я попробую проинсталлить форум с нуля на новой системе. Для чистоты эксперимента выбран LiveCD.
+
+Я выбрал NetUP LiveCD. Это не является рекламой, просто там есть все необходимые серверы, в отличие от того же ubuntu, в котором нету даже апача.
+
+Итак, начнем-с...
+
+Вот медленно загружается этот дистр. Ctrl+alt+f1 - и мы в консоли. Делаем lynx localhost, убеждаемся в том, что апач есть и загружен.
+
+Поднимаем сеть: ifconfig eth0 192.168.0.1 up. Эти детали я раскрываю не очень подробно по понятным причинам. :-)  Переливаем phpbb по сети на эту машину.
+
+# wget http://fidoweb.jino-net.ru/phpbb.zip
+
+Это - версия 2.0.7, на которой система более-менее работает.
+Распакуем, замечая, что в NetUP ServerRoot = /var/www:
+
+# unzip phpbb.zip -d /var/www
+# cd /var/www
+
+Старый индексный файл - чтоб не мешал...
+# rm -f index.html
+
+Устанавливаем phpbb:
+# lynx http://localhost/install/install.php
+
+Язык английский - больше нету, база у нас `mysql --version` == 4.0.24, выбираем mysql 4.x.
+
+Ага... Просит имя базы... Создаем базу и даем разрешения юзерю на всё, я тут о форуме говорю, а не о безопасности. :-)  :
+
+# mysql
+mysql> create database qwerty;
+mysql> grant all on qwerty.* to apache;
+mysql> quit
+
+Вернемся к lynx, заполним database name = qwerty. Юзерь - 'apache', пассворд - ''. Префикс пусть будет 'winmd_'. (легко понять, как расшифровывается. ;-) ). Есстно, можно поставить любой префикс.
+
+Дальше всё пропускаем, доходим до админовского логина. login = 'root', pass = '******' ;-)))
+
+<<Start install>>.
+
+Ok. Phpbb мы поставили. Удаляем следы скриптов инсталла:
+# rm -rf install
+# rm -rf contrib
+
+
+Теперь ставим мой тоссер... :-)
+
+# mkdir incs
+# cp <все файлы> incs
+# find incs --exec chmod 0644 {} \;
+
+Создаем "ярлыки" для запуска тоссера:
+# echo '<? require "incs/E_phfito.php"; ?>' > toss.php
+# echo '<? require "incs/E_scanareas.php"; ?>' > scan.php
+
+Теперь самое интересное - конфиг. :-)
+# mkdir cfg
+# chmod 0777 cfg
+
+"Ярлык" для конфига - чтоб он сам в main dir не болтался:
+# echo 'include cfg/config' > config
+# chmod 0644 config
+
+Пишем конфиг - лучше в vi. ;-)
+# vi cfg/config
+----------------------------------------------------------------------
+# Разве тут нужны комментарии???
+Address 2:50/13.123
+Inbound in
+Outbound out
+TempInbound in/tmp
+TempOutbound out/tmp
+TempDir tmp
+
+# А вот тут интересно...
+MsgBase /qwerty/winmd
+# Первое - имя базы (db), второе - префикс. Префикс - без конечной черточки!
+# Т.е. если префикс у phpbb - 'phpbb_', ставим 'phpbb'.
+
+# без комментариев
+AutoCreateAreasFile cfg/areas
+IncludeAreas cfg/areas
+
+# Наша база - phpbb. Еще умеем jam, squish, opus, mysql, fips - за
+# соответствующими модулями - ко мне. :-)
+AutoCreateDefaults -b phpbb
+
+# Лог-файл, последний параметр - разделитель. Для мастдайки - "\r\n".
+LogFile cfg/log 1234567890QWERTYUIOPASDFGHJKLZXCVBNM "\n"
+# Лог ошибок
+ErrLogFile cfg/err -h
+
+# А это - просто пальцЫ. ;-)
+phpbb_version phpBB 2.0.7 (c) phpBB Group.
+phpbb_tearline Powered by phpBB 2.0.7 (c) phpBB Group.
+phpbb_origin Fidonet rulezz forever!!!
+
+# Бли-и-ин... одно из главного забыл. :-)
+mysqlhost localhost
+mysqluser apache
+
+# Пароля нет, если бы был, было бы:
+# mysqlpass ******
+----------------------------------------------------------------------
+
+Конфиг написали...
+
+Создаем файл с эхами и распределяем права доступа:
+# touch cfg/areas
+# chmod 0644 cfg/*
+
+Создаем пути:
+# mkdir in ; chmod 0777 in
+# mkdir out ; chmod 0777 out
+# mkdir in/tmp ; chmod 0777 in/tmp
+# mkdir out/tmp ; chmod 0777 out/tmp
+# mkdir tmp ; chmod 0777 tmp
+
+Тестируем:
+# cp /fido/out/0032000d.pnt/9844fa84.tu0 in
+# php toss.php
+bash: php: command not found
+
+Такой команды в NetUP нету. А мы пойдем другим путем. (с)
+# telnet localhost 80
+GET /toss.php HTTP/1.0
+<... лог скипнут ...>
+
+# telnet localhost 80
+GET /scan.php HTTP/1.0
+<... лог скипнут ...>
+
+Ур-р-ра!!! Зарррработало! (с) Матроскин
+
+Остается настроить доставку бандлов на сайт, но это уже совсем другая история...
+
+

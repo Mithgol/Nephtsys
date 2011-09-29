@@ -1,0 +1,108 @@
+Примерный формат базы форума phpbb, и принципы интеграции этой фигни с фидошкой.
+
+Делалось на основе результатов "mysqld --log=/.../log" и собственных опытов. Тут нету поиска по словам - я в нем таки не разобрался...
+
+И так предположим, что префикс таблиц дефолтный, т.е. "phpbb_"
+
+
+*** Форумы: 
+
+Таблица - phpbb_forums.
+Основные поля:
+forum_id - должен быть уникальным, вероятно, по нему осуществляется сортировка.
+forum_name - имя форума ака эхотаг.
+forum_desc - описание форума. Сюда пихаем описание эхи из эхолиста. Я это пока не сделал.
+forum_order - а может, это - сортировка. ХЗ... Я стараюсь делать значение уникальным.
+cat_id - вероятно, forum_id форума-контейнера. Я ставлю 1, т.е. эхи крейтятся только в первом форуме. Надо будет исправить. Так, возможно разбиение эх по группам.
+Дальше идут поля, которые к fido не относятся и в них легко разобраться.
+
+Я создаю так:
+ INSERT INTO $prefix_forums (forum_id, forum_name, cat_id, forum_desc, 
+  forum_order, forum_status, prune_enable, auth_view, auth_read, auth_post, 
+  auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, 
+  auth_pollcreate)
+ VALUES ($f_id, $echo, 1, '', $f_order, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 1);
+
+Где $prefix - префикс, $f_id - наибольший forum_id + 1, $echo - эха, $f_order - наибольший forum_order + 1;
+
+*** Юзери:
+
+Таблица - phpbb_users
+Основные поля:
+user_id - id юзеря, он уникален.
+username - имя юзеря.
+user_regdate - дата первого сообщения, попавшего от юзеря из фидо.
+user_password - md5 от пароля. У меня стоит по дефолту md5 от random.
+user_email - email. У меня - пустой. Очевидно, надо в формате .fidonet.org. :-)
+user_from - местонах(с) юзеря. Очевидно, берем из нодлиста. У себя я такого не сделал.
+
+Таблица - phpbb_groups (группы?)
+А Х его З: я для каждого юзеря делаю отдельную группу.
+
+Таблица - phpbb_user_group (отношение юзеров к группам)
+user_id - понятно
+group_id - понятно
+group_pending - а Х его З.
+
+Юзеря я создаю так (желательно делать в пределах транзакции):
+
+ BEGIN
+
+ INSERT INTO $prefix_users (user_id, username, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_sig_bbcode_uid, user_avatar, user_viewemail, user_aim, user_yim, user_msnm, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_dateformat, user_lang, user_style, user_level, user_allow_pm, user_active, user_actkey)
+ VALUES ($uid, '$username', $time, '$md5pwd', '', '', '', '', '', '', '', '', '', 0, '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'D M d, Y g:i a', 'english', 1, 0, 1, 1, '')
+
+ INSERT INTO $prefix_groups (group_id, group_name, group_description, group_single_user, group_moderator)
+ VALUES ($gid, '', 'Personal User', 1, 0)
+
+ INSERT INTO $prefix_user_group (user_id, group_id, user_pending) 
+ VALUES ($uid, $gid, 0)
+ 
+ COMMIT
+
+$prefix - сами знаете
+$gid и $uid - (наибольшие соответственно group_id и user_id) + 1
+$username - имя юзера
+$time - текущее unixtime
+$md5pwd - md5-хеш от рандомной строки.
+
+
+*** Треды
+
+Таблица - phpbb_topics
+Основные поля:
+topic_title - сабж первого письма в треде, усеченный на предмет Re:. Оригинальный сабж хранится в другом месте.
+topic_poster - user_id начавшего тред.
+topic_time - время начала треда.
+Дальше не разбирался - ставил нули.
+
+Создаю тред так (в транзакции постинга письма):
+
+ INSERT INTO $prefix_topics (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type, topic_vote)
+ VALUES ('$subj', $uid, $date, $echoid}, 0, 0, 0)
+
+$prefix, $subj - очевидно.
+$uid - user_id начавшего тред.
+$date - unixtime текущий.
+$echoid - forum_id нашей эхи.
+
+
+*** Посты (начинается самое интересное)
+
+Таблица - phpbb_posts
+Основные поля:
+post_id - autoincrement, его заполнять не надо.
+topic_id - номер треда (про линковку - в конце)
+forum_id - номер форума ака эхи.
+poster_id - user_id запостившего.
+post_username - имя постившего.
+Хинт: когда пишет обычный юзер, последнее поле не заполняется! А когда пишет анонимус, user_id ставится в "-1", а имя юзеря берется из этого поля.
+post_time - время тоссинга. По этому полю идет сортировка (наверно), поэтому важно ставить именно время тоссинга, а не время написания!
+poster_ip - ... Аттрибуты письма (сюрприз!), об этом - ниже.
+Дальше - не интересно.
+
+Таблица - phpbb_posts_text
+Здесь есть четыре поля:
+post_id - его необходимо делать равным post_id соответствующего хидера в _posts.
+
+
+... Блин... лень писать столько... Щас выложу - продолжу...

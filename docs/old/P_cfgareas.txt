@@ -1,0 +1,5 @@
+##
+## Full config version 0.91 (c) Alex Kocharin, 2:50/13
+##
+## Описание эх.
+##

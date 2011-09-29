@@ -1,0 +1,266 @@
+# $Id: config,v 1.1 2007/05/28 14:16:40 kocharin Exp $
+#
+#  Phfito configuration file
+#
+#  Типичная конфигурация системы... Этот документ не претендует на гордое
+#  звание полной доки. Он написано просто, чтоб было проще писать конфиг...
+#
+
+#
+# Наша система
+#
+
+# Зададим наши адреса, для каждого aka ставим отдельную строчку...
+Address 2:50/13
+Address 2:50/13.13
+
+# Имя системы, используется, например, в сообщениях роботов...
+System AK-Station
+
+# Географическое положение, то же самое примерно...
+Location Kurgan, Russia
+
+# Имя сисопа...
+SysOp Alex Kocharin
+
+#
+# Подключаем файлы...
+#
+
+# Подключим файл с описанием эх...
+includeareas areas
+
+# ... файлэх... (ну файлэхи нам пока не нужны)
+#includefareas fareas
+
+# ... и линков.
+includelinks links
+
+#
+# Логи
+#
+
+# Детальный лог - для отладки, включаем все ранлевелы:
+LogFile flog QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890
+
+# Основной лог
+LogFile log QWERTYUIOPASDFGHJKLMNBVCXZ1234567890
+
+# Выведем лог на консоль...
+LogFile stdout QWERTYUIOPLKJHGFDSAZXCVBNM1234567890
+
+# И лог ошибок...
+ErrLogFile err -h
+
+#
+# Блокировки
+#
+
+# Сам файл-флаг
+lockfile lock-file
+
+# Время его действия, в секундах (по дефолту - 300)
+locktime 300
+
+#
+# Настройки ареафикса
+#
+
+# Хелп, высылающийся линкам по запросу %help (в koi8-r)
+#AreafixHelp cfg/afixhelp.koi
+
+# Avail-list, который высылается по %avail
+#AreafixAvail cfg/avail.list
+
+# Каталог с рулесами
+#RulesDir rules
+
+#
+# Настройки mysql
+#
+
+# Хост (по дефолту - localhost)
+mysqlhost localhost
+
+# Имя юзера
+#mysqluser alex
+
+# Пароль на базу
+#mysqlpass 12345
+
+#
+# Настройки phpbb
+#
+
+# Содержимое @PID
+phpbb_version 2.0.18 (c) phpBB group
+
+# Тирлайн писем с форума...
+phpbb_tearline Powered by phpBB ---
+
+# и ориджин...
+phpbb_origin FidoNet rulezz forever!
+
+# Патчик для смалнюка - см. доку
+#smallnuke_override smallnuke_users
+
+#
+# Правила автокрейта
+#
+
+# Список новых эх пишем в файлик...
+#AutoAreaCreateFlag newareas.lst
+
+# Разрешаем автокрейт локальных эх
+AutoAreaCreate 1
+
+# Сюда пишем инфу о новой эхе
+AutoAreaCreateFile areas
+AutoAreaCreateTable areas
+
+# Базы у нас пусть будут сквишевые - этот параметр подставляем при создании эх
+AutoAreaCreateDefaults -b squish
+
+# Задаем регистр новых эх...
+#CreateAreasCase lower
+#CreateAreasCase upper
+CreateAreasCase mixed
+
+# ... и их баз...
+AreasFileNameCase lower
+#AreasFileNameCase upper
+#AreasFileNameCase mixed
+
+# Распределим эхи по разным группам:
+#CreateGroupMask A /^(mo|n5020)\\./
+#CreateGroupMask B /^(spb|n5030)\\./
+#CreateGroupMask C kurgan.*
+#CreateGroupMask Z *
+
+
+#
+# Устанавливаем каталоги
+#
+
+# Каталог для временных файлов
+TempDir tmp
+
+# Каталог с базами сообщений
+MsgBase msgb
+
+# Входящее мыло...
+Inbound in
+
+# Исходящее (тип оутбаунда - bso)
+Outbound out
+
+# Для локальных целей...
+LocalInbound in/local
+
+# Временный инбаунд и оутбаунд можно совместить...
+TempInbound tmp
+TempOutbound tmp
+
+# Дупобаза
+DupeBase dupes
+
+# Каталог для хранения бинарной статистики:
+StatisticsDir cfg/stat
+
+#
+#  Очередь & форвард-реквесты
+#
+
+# Файл с описанием очереди
+QueueFile cfg/queue
+
+# А сейчас опишем правила посылки аплинков^W аплинкам этих запросов.
+
+# С таймаутом запроса 20 дней форварды посылаем на 1:2/3, если эха присутствует
+# в его эхолисте:
+#Forward 1:2/3 20 List:cfg/1_2_3
+
+# А к 2:3/4 посылаем запросы на все эхи 5020:
+#Forward 2:3/4 20 Mask:n5020.*
+#Forward 2:3/4 20 Mask:mo.*
+
+# Или так:
+#Forward 2:3/4 20 Mask:/^(n5020|mo)\\./
+
+# А на 3:4/5 посылаем реквесты всегда (таймаут - 30 дней):
+#Forward 3:4/5 30 *
+
+# Зададим параметры на определенные действия с очередью:
+Freqtimeout 20
+Idletimeout 10
+Killtimeout 10
+
+
+#
+# Роутинг нетмайла...
+#
+
+# Итак, обозначим роутинг на всех линков:
+# (дадад, перечисляем всех линков)
+Route 2:50/13.1 2:50/13.1
+Route 2:50/13.2 2:50/13.2
+Route 2:50/13.3 2:50/13.3
+Route 2:50/13.4 2:50/13.4
+
+# Местный холодильник:
+Route 2:50/13.999 2:50/13.*
+
+# Роутинг на сети и регионы:
+#Route 2:23* 2:2345/67
+#Route 2:46* 2:46/50
+
+# ... и дефолтный роутинг на фидо:
+#Route 2:123/345 1:* 2:* 3:* 4:* 5:* 6:*
+
+# Остальное - в холодильник:
+Route 2:50/13.999 *
+
+
+#
+# Other features...
+#
+
+# Дефолтный максимальный размер бандла в килобайтах (default 512k).
+DefArcMailSize 256
+
+# Принцип отсчитывания директорий в лошках:
+
+# Полный путь:
+#OutBundleBase full
+
+# От текущей директории:
+#OutBundleBase current
+
+# От каталога с лошкой:
+OutBundleBase out
+
+# После отправки бандла его ...
+
+# ... удаляем:
+OutBundleAct del
+
+# ... обрезаем:
+#OutBundleAct trunc
+
+# или сохраняем:
+#OutBundleAct keep
+
+# Сохраним синбаи при зонгейтинге:
+#NoZoneGating 1
+
+# Можно не наполнять содержимое dupearea и badarea:
+#BadKill 1
+#DupeKill 1
+
+# Не сохраняем пакеты с дупами и бэдами:
+#NoBadSave 1
+#NoDupeSave 1
+
+# Сюда кидать отчеты...
+ReportTo aks.stat
+

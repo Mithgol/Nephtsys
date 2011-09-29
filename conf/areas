@@ -1,0 +1,75 @@
+# $Id: areas,v 1.1 2007/05/28 14:16:40 kocharin Exp $
+# 
+# Phfito configuration file
+#
+# Описываем эхоконференции
+#
+
+# Первая группа эх - это будут общедоступные эхи с неограниченным доступом...
+#
+# Все эхи у нас будут в формате squish, чтоб его каждый раз не писать, 
+# пропишем в дефолтах.
+#
+# Замечу, что golded такие конструкции не понимает, для него нужно указывать
+# тип базы для каждой эхи.
+
+EchoGroup A "Public areas" -b squish
+GroupMode A:rw
+
+# А это - группа для эх с ограниченным доступом.
+#
+# Конечно, формировать группы можно произвольно, я лишь показываю примеры...
+
+EchoGroup B "Limited Areas" -b squish
+GroupMode B:r
+
+# Это - недоступные и не видные нигде локальные эхи:
+#
+# (поставим в дефолты mandatory, чтоб никто не подписывался)
+
+EchoGroup C "Private areas" -b squish
+GroupMode C:mh
+
+# Описания отдельных групп
+#
+# Вообще-то их руками прописывать не обязательно - автокрейт рулит...
+
+# Премодерируемая эха с аплинком 1:2/3 (остальные - даунлинки)
+#
+# Аплинку можно поставить WriteOnly, он всё равно ничего не должен получать...
+
+EchoArea qwerty.filtered.a msgb/qfa -g A -d "Premoderated echo"
+EchoMode qwerty.filtered.a:!w 1:1/1.1:l 1:2/3:w!rl 2:3/4.5:l
+
+# Или то же в более подходящей для этого группе B:
+
+EchoArea qwerty.filtered.b msgb/qfb -g B -d "Premoderated echo"
+EchoMode qwerty.filtered.b 1:1/1.1:l 1:2/3:w!rl 2:3/4.5:l
+
+# Случай плохого даунлинка - поставим его в r/o:
+
+EchoArea qwerty.flame_1 msgb/qf1 -g A -d "Echo for flame"
+EchoMode qwerty.flame_1 1:1/1.1:l!w
+
+# Или вообще закроем ему эху так, что она ему не будет видна и на нее нельзя
+# будет подписаться (хоть он и будет иметь права на чтение/запись, он не
+# сможет подписаться):
+
+EchoArea qwerty.flame_2 msgb/qf2 -g A -d "Echo for flame"
+EchoMode qwerty.flame_2 1:1/1.1:mh
+
+# Ну и стандартные локальные эхи (их можно не прописывать, тоссер сам создаст,
+# тут приведено для примера):
+
+NetMailArea my.netmail msgb/my.netmail -g C -b opus
+BadArea bad.msgs msgb/bad -g C
+DupeArea dupe.msgs msgb/dupe -g C
+LocalArea carbonka msgb/carbon -g C
+
+# Эха для отчетов. Пусть имеет группу C, мы переопределим ее параметры так,
+# что она станет общедоступной (а линку 1:2/3 сделаем обязательной к
+# получению. :-) ):
+
+EchoArea my.stats msgb/my.stats -g C -d "The statistics of my c00l node"
+EchoMode my.stats:r!h!m 1:1/1:l 1:1/2:l 1:2/3:ml
+

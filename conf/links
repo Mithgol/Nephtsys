@@ -1,0 +1,151 @@
+# $Id: links,v 1.1 2007/05/28 14:16:40 kocharin Exp $
+#
+# Phfito configuration file
+#
+# Наши линки
+#
+
+# Начинаем описание параметров по умолчанию для линков.
+LinkDefaults
+
+# Наш ака для линков
+OurAka 2:50/13
+
+# Запретим пакеты с пустым паролем
+allowEmptyPktPwd 0
+
+# Посылаем push message при подписке (см. доку)
+sendpushmsg 1
+
+# По дефолту запретим создание эх от линков
+AutoAreaCreate 0
+
+# Дефолтный размер бандлов в килобайтах...
+DefArcMailSize 512
+
+# И дефолтные настройки flow:
+OutBundleBase out
+OutBundleAct del
+
+#
+# Это будет наш аплинк...
+#
+
+Link My Uplink
+
+# Его адрес для нас
+Aka 2:2/2
+
+# Пароль на этого линка
+Password 123098
+
+# В случае мылеров, отсчитывающих содержимое лошки от ./, делаем:
+OutBundleBase current
+
+# Если аплинк при подписке не хочет получать pushmsg...
+SendPushMsg 0
+
+# Настроим автокрейт эх от него
+AutoAreaCreate 1
+
+# ... в файлы 2_2_2.areas & 2_2_2.table (файлы должны быть подключены 
+# includeareas'ом!):
+AutoAreaCreateFile cfg/2_2_2.areas
+AutoAreaCreateTable cfg/2_2_2.table
+
+# Дефолтная группа - A:
+AutoAreaCreateGroup A
+
+# Создаем базы в jam:
+AutoAreaCreateDefaults -b jam
+
+#
+# А это - наш аплинк в каком-нить левонете...
+#
+
+Link OtherNet
+
+# с адресом...
+Aka 123:456/987
+
+# Наш ака тут другой...
+OurAka 123:456/789
+
+# Пароль на этого линка
+Password OtherNet
+
+# Допустим, надо сохранить бандлы для дебага...
+OutBundleAct keep
+
+# Линк кривой, оверриднем размер бандлов:
+DefArcMailSize 100
+
+# У этого линка тож будет возможность создания эх:
+AutoAreaCreate 1
+
+# ... в файл levonet_areas:
+AutoAreaCreateFile levonet_areas
+AutoAreaCreateTable levonet_areas
+
+# Группа по дефолту - B:
+AutoAreaCreateGroup B
+
+# Создаем базы тоже в jam:
+AutoAreaCreateDefaults -b jam
+
+#
+# Наш пойнт
+#
+
+# Его адрес:
+Aka 2:50/13.123
+
+# Глючный линк со сквишем, может не ставить пароли на pkt.
+AllowEmptyPktPwd 1
+
+# Пароль для него
+Password qwerty
+
+# Пусть он будет в паузе...
+Pause 1
+
+#
+# Еще один пойнт - вообще, достаточно поставить только эти параметры...
+#
+
+# Адрес:
+Aka 2:50/13.456
+
+# Пароль для него
+Password pwdbwq
+
+#
+# И еще один пойнт - пусть он у нас будет на том же компе, что и мы.
+# Соответственно, настраиваем amfow_disk...
+#
+
+# Адрес этого линка
+Aka 2:50/13.789
+
+# Пароль на линка
+Password locpnt
+
+# Сюда линк кидает бандлы к нам:
+MoveFrom /var/fido/node.in
+
+# А сюда мы перемещаем бандлы к этому линку:
+MoveTo /var/fido/789.in
+
+#
+# Местный холодильник
+#
+
+Link Holodilnik
+
+# Address:
+Aka 2:50/13.999
+
+# На всякий случай поставим пароль...
+Password 1qazxsw2
+
+
