@@ -49,8 +49,8 @@ Ok. Phpbb мы поставили. Удаляем следы скриптов инсталла:
 # find incs --exec chmod 0644 {} \;
 
 Создаем "ярлыки" для запуска тоссера:
-# echo '<? require "incs/E_phfito.php"; ?>' > toss.php
-# echo '<? require "incs/E_scanareas.php"; ?>' > scan.php
+# echo '<?php require "incs/E_phfito.php"; ?>' > toss.php
+# echo '<?php require "incs/E_scanareas.php"; ?>' > scan.php
 
 Теперь самое интересное - конфиг. :-)
 # mkdir cfg

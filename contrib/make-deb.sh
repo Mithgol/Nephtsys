@@ -73,7 +73,7 @@ FROM=$PHFITO
 SHARE=/usr/share/phfito
 CONFIGS=/etc/phfito
 PHP=/usr/bin/php
-	echo '<?
+	echo '<?php
 $file = file("'$FROM'/phfito.php");
 $src_path = "'$SHARE'";
 $config_file = "'$CONFIGS'";

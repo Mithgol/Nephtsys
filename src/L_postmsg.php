@@ -1,4 +1,4 @@
-<?
+<?php
 /*\
   /  This is a part of PhFiTo (aka PHP Fido Tosser)
  //  Copyright (c) Alex Kocharin, 2:50/13
@@ -125,5 +125,3 @@ E_post.php [-fu fromuser] [-tu touser] [-e echo] [-s subject] [-fa fromaddr]
 		  $ps->subj, $body, 0);
 	}
 }
-
-?>

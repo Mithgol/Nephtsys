@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?
+<?php
 //  This file is deprecated!!!!!
 //  Should be removed in future release
 //
@@ -238,5 +238,3 @@ if ($_SERVER['argc'] == 2) {
 } else {
     print "Usage: L_genstat.php 0|1|2|3|4|5\n";
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*\
   /  This is a part of PhFiTo (aka PHP Fido Tosser)
  //  Copyright (c) Alex Kocharin, 2:50/13
@@ -533,5 +533,3 @@ class JamBaseHdr
 		));
 	}
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*\
   /  This is a part of PhFiTo (aka PHP Fido Tosser)
  //  Copyright (c) Alex Kocharin, 2:50/13
@@ -344,5 +344,3 @@ function _int_sort($a,$b)
 	if ($a>$b) return 1;
 	return 0;
 }
-
-?>

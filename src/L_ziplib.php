@@ -1,4 +1,4 @@
-<?
+<?php
 /*\
   /  This is a part of PhFiTo (aka PHP Fido Tosser)
  //  Copyright (c) Alex Kocharin, 2:50/13
@@ -842,12 +842,3 @@ function ParseMimeifiedPages ($data)
 
     return array($page);
 }
-
-// Local Variables:
-// mode: php
-// tab-width: 8
-// c-basic-offset: 4
-// c-hanging-comment-ender-p: nil
-// indent-tabs-mode: nil
-// End:   
-?>

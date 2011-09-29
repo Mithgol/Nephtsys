@@ -135,7 +135,7 @@ if [ -n "$EXECUTABLE" ]; then
 		rm $EXECUTABLE
 	fi
 	echo 'Installing phfito.php into '$SHARE
-	echo '<?
+	echo '<?php
 $file = file("'$FROM'/phfito.php");
 $src_path = "'$SHARE'";
 $config_file = "'$CONFIGS'";
@@ -180,4 +180,3 @@ if [ -n "$CONFINST" ]; then
 	echo 'Now you must edit your configuration in '$CONFIGS' directory'
 fi
 exit 0
-

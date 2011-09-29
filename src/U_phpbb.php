@@ -1,4 +1,4 @@
-<?
+<?php
 //  This file is deprecated!!!!!
 //  Should be removed in future release
 //
@@ -120,5 +120,3 @@ if ($Areas):
 	SortAreas_phpbb();
 endif;
 aks_done();
-
-?>

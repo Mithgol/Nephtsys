@@ -1,4 +1,4 @@
-<?
+<?php
 /*\
   /  This is a part of PhFiTo (aka PHP Fido Tosser)
  //  Copyright (c) Alex Kocharin, 2:50/13
@@ -684,5 +684,3 @@ WHERE forum_id = {$this->echoid} AND topic_title = '$subj' LIMIT 1");
 		return $result;
 	}
 }
-
-?>
