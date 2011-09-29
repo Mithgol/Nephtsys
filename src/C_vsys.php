@@ -9,6 +9,10 @@
 /    $Id: C_vsys.php,v 1.6 2011/01/08 12:21:09 kocharin Exp $
 \*/
 
+/*  Nephtsys caution: _mk_change($str) contains uppercase Cyrillic in UTF-8,
+ *  might be not appropriate on some systems.
+*/
+
 if (!function_exists('xinclude')) die();
 
 class C_vsys
@@ -457,7 +461,7 @@ class C_vsys
 			$word = '';
 			$result = '';
 			for($i=0;$i<$s;$i++):
-				if (strpos('QWERTYUIOPASDFGHJKLZXCVBNMêãõëåîçûýúèÿæù÷áðòïìäñþóíéôøâàüöqwertyuiopasdfghjklzxcvbnm',$str{$i})===false):
+				if (strpos('QWERTYUIOPASDFGHJKLZXCVBNMÐ™Ð¦Ð£ÐšÐ•ÐÐ“Ð¨Ð©Ð—Ð¥ÐªÐ¤Ð«Ð’ÐÐŸÐ ÐžÐ›Ð”Ð¯Ð§Ð¡ÐœÐ˜Ð¢Ð¬Ð‘Ð®Ð­Ð–qwertyuiopasdfghjklzxcvbnm',$str{$i})===false):
 					if ($word):
 						$ns = $this->_read_file_and_match($f,$word,1);
 						$result.= $ns?$ns:$word;
